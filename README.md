@@ -11,8 +11,7 @@
 
 - Project scaffold: completed (Vite + React).
 - Core landing scene implemented: intro SVG mask animation, hero layout, background/foreground image layers, character image, navbar, and bottom call-to-action.
-- Interactive features: mouse-tracking parallax and GSAP-driven intro timeline are implemented.
-- Incomplete items: additional pages, accessibility polishing, asset optimization, testing, responsive edge-case fixes, and production deployment configuration.
+- Interactive features: GSAP-driven intro timeline and mouse-tracking parallax implemented. The mousemove handler has been moved into a React `useEffect` with proper cleanup to avoid leaks.
 
 ## Key Features (Implemented)
 
@@ -31,16 +30,16 @@
 
 ## Architecture & Key Components
 
-- `src/App.jsx`: Central component holding the landing markup and GSAP logic. It contains:
-	- Initial SVG mask animation that removes the `.svg` intro container and toggles the main content.
-	- Event listener for `mousemove` which updates parallax transforms via `gsap.to(...)` calls.
-
-- Static assets (images) are referenced from the project root (`public/` or relative paths) and layered in the hero section.
+- `src/App.jsx`: Central component holding the landing markup and GSAP logic. Recent changes:
+	- Intro SVG mask animation remains in-place and toggles the main content when complete.
+	- Mousemove parallax: previously attached directly within GSAP code; now attached via a React `useEffect` with a named handler and proper removal on unmount.
+	- Hard-coded Tailwind transform utilities were simplified to allow to control scales/rotations via media queries.
+- Static assets (images) are referenced via relative paths; verify they live in `public/` or update imports for bundlers.
 
 ## UI / Animation Details
 
 - Intro timeline: rotates and scales a `VI` text mask with easing; when the mask reaches ~90% progress it removes the intro element and reveals the main scene.
-- Parallax: cursor X position is converted into a horizontal offset applied to `.text`, `.sky`, and `.bg` layers with different strengths to simulate depth.
+- Parallax: cursor X position is converted into a horizontal offset applied to heading lines (`.main`), `.sky`, and `.bg` layers with different strengths to simulate depth. The handler uses `gsap.to(...)` to animate properties for smooth motion.
 
 ## How to Run (development)
 
@@ -58,6 +57,10 @@ npm run dev
 
 Open the dev server URL printed by Vite (usually `http://localhost:5173`).
 
+Notes:
+- If icons are missing, install Remix Icon (already included in the project dependencies): `npm i remixicon`.
+- If images don't load, confirm `public/` contains `bg.png`, `sky.png`, `girlbg.png`, `ps5.png`, and other referenced assets, or update imports to use `import` statements.
+
 ## Contribution & Notes
 
 - This is an active prototype; contributions are welcome. Please open issues or PRs describing the change.
@@ -65,4 +68,6 @@ Open the dev server URL printed by Vite (usually `http://localhost:5173`).
 
 ---
 
-*Report generated: current implementation snapshot — project incomplete but core interactions and visual experience implemented.*
+*Updated: README reflects recent responsive refactors, event-listener cleanup, and layout simplifications.*
+
+---
